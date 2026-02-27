@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Article {
+  id              String   @id @default(cuid())
+  title           String
+  url             String   @unique
+  source          String
+  contentSnippet  String   @default("")
+  author          String?
+  publishedAt     DateTime
+  crawledAt       DateTime @default(now())
+  language        String   @default("en")
+  engagementScore Int      @default(0)
+  relevanceScore  Float    @default(0)
+  keywordsMatched String   @default("[]")
+  isRead          Boolean  @default(false)
+  isBookmarked    Boolean  @default(false)
+  contentHash     String?
+
+  relatedProjects RelatedProject[]
+
+  @@index([source])
+  @@index([publishedAt])
+  @@index([relevanceScore])
+  @@map("articles")
+}
+
+model RelatedProject {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  platform    String
+  description String?
+  stars       Int?
+  createdAt   DateTime @default(now())
+
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@map("related_projects")
+}
+
+model CrawlLog {
+  id          String    @id @default(cuid())
+  source      String
+  status      String
+  itemsFound  Int       @default(0)
+  itemsNew    Int       @default(0)
+  errorMsg    String?
+  startedAt   DateTime
+  completedAt DateTime?
+  durationMs  Int?
+
+  @@index([source])
+  @@index([startedAt])
+  @@map("crawl_logs")
+}
+
+model KeywordConfig {
+  id       String  @id @default(cuid())
+  keyword  String  @unique
+  language String  @default("en")
+  isActive Boolean @default(true)
+  weight   Float   @default(1.0)
+
+  @@map("keyword_configs")
+}
+
+model SourceConfig {
+  id            String    @id @default(cuid())
+  source        String    @unique
+  isEnabled     Boolean   @default(true)
+  crawlInterval Int       @default(240)
+  lastCrawledAt DateTime?
+  apiKey        String?
+  extraConfig   String?
+
+  @@map("source_configs")
+}

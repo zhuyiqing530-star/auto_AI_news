@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env
+.env.local
+prisma/dev.db
+prisma/dev.db-journal
+prisma/dev.db-wal
+prisma/dev.db-shm
+__pycache__/
+*.pyc
+.venv/
+crawler/*.log
+.DS_Store
+Thumbs.db
