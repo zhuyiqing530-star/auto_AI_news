@@ -10,7 +10,12 @@ export async function POST() {
     const crawlerDir = path.join(process.cwd(), "crawler");
     const { stdout, stderr } = await execAsync(
       "python summarizer.py",
-      { cwd: crawlerDir, timeout: 90000 }
+      {
+        cwd: crawlerDir,
+        timeout: 90000,
+        encoding: "utf-8",
+        env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+      }
     );
 
     if (stderr) {
@@ -24,3 +29,4 @@ export async function POST() {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
