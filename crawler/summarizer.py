@@ -104,6 +104,7 @@ def summarize(hours: int = 72) -> dict:
 
 if __name__ == "__main__":
     import sys
+    sys.stdout.reconfigure(encoding="utf-8")
     result = summarize()
     # Output JSON for API route to parse
     print(json.dumps(result, ensure_ascii=False))
